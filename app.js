@@ -358,7 +358,7 @@ function rIht(){
 function draftHTML(){
   var b=S.brand,d=S.wd,p=d.personal||{},today=new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
   var pc=b.primaryColor||"#1a4a6e",ac=b.accentColor||"#b45309";
-  var fontLink='<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">';
+  var fontLink='<style>@import url(\"https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&display=swap\");</style>';
   var fs='font-family:\"Crimson Pro\",Georgia,\"Times New Roman\",serif;';
 
   function sec(n,t){return '<h2 style="'+fs+'font-size:22px;font-weight:700;color:'+pc+';margin:36px 0 12px;padding-bottom:8px;border-bottom:1px solid #ddd">'+n+'. '+t+'</h2>';}
