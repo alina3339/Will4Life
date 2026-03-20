@@ -1,7 +1,7 @@
 (function(){
 "use strict";
 // ═══════════════════════════════════════════════════════════════════════════
-// BROWSER STORAGE API — IndexedDB backend, same interface as Electron API
+// BROWSER STORAGE API - IndexedDB backend, same interface as Electron API
 // Provides: window.api with customerList, customerGet, customerSave, etc.
 // ═══════════════════════════════════════════════════════════════════════════
 

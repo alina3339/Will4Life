@@ -376,14 +376,14 @@ function draftHTML(){
   // ── Title page
   h+='<div style="text-align:center;padding:60px 0 40px;border-bottom:2px solid '+pc+';margin-bottom:32px">';
   if(b.logo)h+='<img src="'+b.logo+'" style="max-height:50px;margin-bottom:16px" alt="">';
-  if(b.companyName&&b.companyName!=="Estate Planner")h+='<div style="font-size:16px;color:#888;margin-bottom:24px">'+esc(b.companyName)+(b.tagline?' &mdash; '+esc(b.tagline):'')+'</div>';
+  if(b.companyName&&b.companyName!=="Estate Planner")h+='<div style="font-size:16px;color:#888;margin-bottom:24px">'+esc(b.companyName)+(b.tagline?' - '+esc(b.tagline):'')+'</div>';
   h+='<div style="font-size:28px;font-weight:700;letter-spacing:.02em">Last Will</div>';
   h+='<div style="font-size:22px;margin:4px 0">and</div>';
   h+='<div style="font-size:28px;font-weight:700;letter-spacing:.02em">Testament</div>';
   h+='<div style="font-size:18px;margin-top:16px">of</div>';
   h+='<div style="font-size:24px;font-weight:700;margin-top:8px">'+esc(fullName)+'</div>';
   h+='<div style="font-size:14px;color:#888;margin-top:24px">Prepared: '+today+'</div>';
-  h+='<div style="color:'+ac+';font-weight:700;margin-top:6px;font-size:14px;letter-spacing:.03em">DRAFT &mdash; NOT YET APPROVED</div></div>';
+  h+='<div style="color:'+ac+';font-weight:700;margin-top:6px;font-size:14px;letter-spacing:.03em">DRAFT - NOT YET APPROVED</div></div>';
 
   // ── Preamble
   h+=para('This Will is made by me <strong>'+esc(fullName)+'</strong> of '+esc(addr)+(p.dob?', born on '+esc(p.dob):'')+'.');
