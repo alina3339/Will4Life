@@ -57,7 +57,7 @@ function safe(fn,fb){
 }
 
 function toast(m){var d=document.createElement("div");d.className="to";d.textContent=m;document.body.appendChild(d);setTimeout(function(){d.remove();},3000);}
-function esc(s){var d=document.createElement("div");d.textContent=s||"";return d.innerHTML;}
+function esc(s){var d=document.createElement("div");d.textContent=s||"";return d.innerHTML.replace(/\u2014/g,"-").replace(/\u2013/g,"-");}
 
 function fld(label,name,val,type,opts){
   var o=opts||{};var req=o.req?'<span class="rq"> *</span>':"";
