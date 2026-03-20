@@ -358,194 +358,231 @@ function rIht(){
 function draftHTML(){
   var b=S.brand,d=S.wd,p=d.personal||{},today=new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
   var pc=b.primaryColor||"#1a4a6e",ac=b.accentColor||"#b45309";
-  var fontLink='<style>@import url(\"https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&display=swap\");</style>';
-  var fs='font-family:\"Crimson Pro\",Georgia,\"Times New Roman\",serif;';
+  var fs='font-family:"Crimson Pro",Georgia,"Times New Roman",serif;';
+  var cn=0;
+  var fullName=((p.title||"")+" "+(p.fullName||"[Name]")).trim();
+  var addr=(p.address||"[Address]").replace(/\n/g,", ");
+  var isMale=(p.title==="Mr"||p.title==="Dr"||p.title==="Prof");
 
-  function sec(n,t){return '<h2 style="'+fs+'font-size:22px;font-weight:700;color:'+pc+';margin:36px 0 12px;padding-bottom:8px;border-bottom:1px solid #ddd">'+n+'. '+t+'</h2>';}
-  function sub(t){return '<h3 style="'+fs+'font-size:18px;font-weight:600;color:#333;margin:20px 0 8px">'+t+'</h3>';}
-  function row(l,v){return v?'<tr><td style="padding:5px 0;font-weight:600;color:#555;width:220px;vertical-align:top;'+fs+'font-size:16px">'+l+'</td><td style="padding:5px 0;'+fs+'font-size:16px">'+esc(v)+'</td></tr>':'';}
-  function tbl(rows){return rows?'<table style="width:100%;border-collapse:collapse;margin:8px 0">'+rows+'</table>':'';}
-  function items(arr,fn){if(!arr||arr.length===0)return '<p style="color:#999;font-style:italic;'+fs+'font-size:15px">None recorded</p>';return arr.map(function(x,i){return '<div style="background:#f9f9f9;border:1px solid #eee;border-radius:4px;padding:12px 16px;margin:6px 0;'+fs+'font-size:15px;line-height:1.6">'+fn(x,i)+'</div>';}).join("");}
-  function yn(v){return v==="Yes"?"Yes":v==="No"?"No":"-";}
+  function sec(t){cn++;return '<h2 style="'+fs+'font-size:22px;font-weight:700;color:'+pc+';margin:36px 0 8px;padding-bottom:6px;border-bottom:1px solid #ddd">'+cn+'. '+t.toUpperCase()+'</h2>';}
+  function cl(n,text){return '<p style="'+fs+'font-size:16px;line-height:1.8;margin:8px 0 8px 0"><strong>'+cn+'.'+n+'.</strong> '+text+'</p>';}
+  function para(text){return '<p style="'+fs+'font-size:16px;line-height:1.8;margin:8px 0">'+text+'</p>';}
+  function bul(text){return '<li style="'+fs+'font-size:15px;line-height:1.7;margin:4px 0">'+text+'</li>';}
+  function blist(arr){return '<ul style="margin:8px 0 8px 28px">'+arr.join("")+'</ul>';}
 
-  var h=fontLink+'<div style="'+fs+'max-width:800px;margin:0 auto;color:#222;line-height:1.7;font-size:16px">';
+  var fl='<style>@import url("https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&display=swap");</style>';
+  var h=fl+'<div style="'+fs+'max-width:800px;margin:0 auto;color:#222;line-height:1.7;font-size:16px">';
 
-  // Header
-  h+='<div style="text-align:center;border-bottom:2px solid '+pc+';padding-bottom:20px;margin-bottom:32px">';
-  if(b.logo)h+='<img src="'+b.logo+'" style="max-height:50px;margin-bottom:10px" alt="">';
-  h+='<div style="font-size:24px;font-weight:700;color:'+pc+';letter-spacing:-.01em">'+esc(b.companyName)+'</div>';
-  if(b.tagline)h+='<div style="font-size:14px;color:#888;margin-top:2px">'+esc(b.tagline)+'</div>';
-  if(b.contactPhone||b.contactEmail)h+='<div style="font-size:13px;color:#aaa;margin-top:4px">'+esc(b.contactPhone||"")+(b.contactPhone&&b.contactEmail?" \u00b7 ":"")+esc(b.contactEmail||"")+'</div>';
-  if(b.contactAddress)h+='<div style="font-size:13px;color:#aaa">'+esc(b.contactAddress).replace(/\n/g,", ")+'</div>';
-  h+='<div style="font-size:22px;font-weight:700;color:'+pc+';margin-top:16px;letter-spacing:.02em">ESTATE PLAN \u2014 DRAFT FOR REVIEW</div>';
-  h+='<div style="font-size:14px;color:#888;margin-top:4px">Prepared: '+today+'</div>';
-  h+='<div style="color:'+ac+';font-weight:700;margin-top:6px;font-size:14px;letter-spacing:.03em">DRAFT \u2014 NOT YET APPROVED</div></div>';
+  // ── Title page
+  h+='<div style="text-align:center;padding:60px 0 40px;border-bottom:2px solid '+pc+';margin-bottom:32px">';
+  if(b.logo)h+='<img src="'+b.logo+'" style="max-height:50px;margin-bottom:16px" alt="">';
+  if(b.companyName&&b.companyName!=="Estate Planner")h+='<div style="font-size:16px;color:#888;margin-bottom:24px">'+esc(b.companyName)+(b.tagline?' &mdash; '+esc(b.tagline):'')+'</div>';
+  h+='<div style="font-size:28px;font-weight:700;letter-spacing:.02em">Last Will</div>';
+  h+='<div style="font-size:22px;margin:4px 0">and</div>';
+  h+='<div style="font-size:28px;font-weight:700;letter-spacing:.02em">Testament</div>';
+  h+='<div style="font-size:18px;margin-top:16px">of</div>';
+  h+='<div style="font-size:24px;font-weight:700;margin-top:8px">'+esc(fullName)+'</div>';
+  h+='<div style="font-size:14px;color:#888;margin-top:24px">Prepared: '+today+'</div>';
+  h+='<div style="color:'+ac+';font-weight:700;margin-top:6px;font-size:14px;letter-spacing:.03em">DRAFT &mdash; NOT YET APPROVED</div></div>';
 
-  // 1. Personal
-  h+=sec("1","Personal Details");
-  h+=tbl(row("Name",(p.title||"")+" "+(p.fullName||"\u2014"))+row("Date of Birth",p.dob)+row("Marital Status",p.maritalStatus)+row("Address",(p.address||"").replace(/\n/g,", "))+row("NI Number",p.ni)+row("Phone",p.phone)+row("Email",p.email));
+  // ── Preamble
+  h+=para('This Will is made by me <strong>'+esc(fullName)+'</strong> of '+esc(addr)+(p.dob?', born on '+esc(p.dob):'')+'.');
 
-  // 2. Mirror Will
-  if(d.isMirrorWill==="Yes"){
-    h+=sec("2","Mirror Will");
-    h+='<p style="'+fs+'font-size:16px">This will is made alongside that of <strong>'+esc(d.mirrorPartnerName||"\u2014")+'</strong>'+(d.mirrorPartnerDOB?", born "+esc(d.mirrorPartnerDOB):"")+'. Both parties have agreed that either may change or revoke their will at any time independently.</p>';
+  // ── 1. Revocation
+  h+=sec('Revoking Previous Wills');
+  h+=cl(1,'I hereby revoke all former Wills and testamentary dispositions heretofore made by me and declare this to be my last Will and Testament.');
+
+  // ── 2. Freedom to Revoke
+  if(d.isMirrorWill==="Yes"&&d.mirrorPartnerName){
+    h+=sec('Freedom to Revoke');
+    h+=cl(1,'Although this Will is similar to that of my '+(isMale?'wife':'husband')+' <strong>'+esc(d.mirrorPartnerName)+'</strong> of '+esc(d.mirrorPartnerAddress||addr)+(d.mirrorPartnerDOB?', born on '+esc(d.mirrorPartnerDOB):'')+', we have agreed that either of us can change or revoke our Wills at any time.');
   }
 
-  // 3. Executors & Trustees
-  var sn=d.isMirrorWill==="Yes"?3:2;
-  h+=sec(sn,"Executors and Trustees");
-  if((d.executors||[]).length>0){sub("Appointed Executors");h+=items(d.executors,function(x){return '<strong>'+esc(x.name||"?")+'</strong>'+(x.dob?' (DOB: '+esc(x.dob)+')':'')+(x.relationship?' \u2014 '+esc(x.relationship):'')+(x.address?'<br>'+esc(x.address):'');});}
-  if((d.substituteExecutors||[]).length>0){h+=sub("Substitute Executors");h+=items(d.substituteExecutors,function(x){return '<strong>'+esc(x.name||"?")+'</strong>'+(x.relationship?' \u2014 '+esc(x.relationship):'')+(x.address?'<br>'+esc(x.address):'');});}
-  if(d.trusteeAppointmentBasis){h+=sub("Trustees");h+='<p style="'+fs+'font-size:16px">Appointment basis: <strong>'+esc(d.trusteeAppointmentBasis)+'</strong></p>';}
-  if(d.trusteeAppointmentBasis==="Named individuals below"&&(d.willTrustees||[]).length>0){h+=items(d.willTrustees,function(t){return '<strong>'+esc(t.name||"?")+'</strong>'+(t.relationship?' \u2014 '+esc(t.relationship):'');});}
+  // ── 3. Executors and Trustees
+  h+=sec('Executors and Trustees');
+  var ecn=1;
+  if((d.executors||[]).length>0){
+    var exL=d.executors.map(function(x){return 'my '+(x.relationship||"executor").toLowerCase()+' <strong>'+esc(x.name||"[Name]")+'</strong> of '+esc(x.address||"[Address]")+(x.dob?', born on the '+esc(x.dob):'');}).join(' and ');
+    h+=cl(ecn,'I appoint as my executors '+exL+'.');ecn++;
+  }
+  if((d.substituteExecutors||[]).length>0){
+    var subL=d.substituteExecutors.map(function(x){return 'my '+(x.relationship||"substitute").toLowerCase()+' <strong>'+esc(x.name||"[Name]")+'</strong> of '+esc(x.address||"[Address]");}).join(' and ');
+    h+=cl(ecn,'If any of my appointed executors are unable or unwilling to act, I appoint as substitute executor '+subL+'.');ecn++;
+  }
+  if(d.trusteeAppointmentBasis==="Those executors who obtain probate"){
+    h+=cl(ecn,'I appoint as my Trustees those of my executors who obtain probate of this Will. In this Will the expression &ldquo;my Trustees&rdquo; means (as the context requires) those of my executors who obtain probate and the Trustees for the time being of any Trust arising under this Will unless a specific appointment is made to the contrary.');
+  }else if(d.trusteeAppointmentBasis==="Named individuals below"&&(d.willTrustees||[]).length>0){
+    var tL=d.willTrustees.map(function(t){return '<strong>'+esc(t.name||"[Name]")+'</strong> of '+esc(t.address||"[Address]");}).join(' and ');
+    h+=cl(ecn,'I appoint as my Trustees of any trusts created by this my Will '+tL+'.');
+  }
 
-  // 4. Guardians
-  sn++;
+  // ── 4. Guardians
   if((d.guardians||[]).length>0){
-    h+=sec(sn,"Guardians");
-    h+=items(d.guardians,function(g){var s='<strong>'+esc(g.name||"?")+'</strong>'+(g.relationship?' \u2014 '+esc(g.relationship):'');if(g.guardianFor)s+='<br>Guardian for: '+esc(g.guardianFor);if(g.condition)s+='<br>Condition: '+esc(g.condition);if(g.substituteName)s+='<br>Substitute: '+esc(g.substituteName)+(g.substituteAddress?' of '+esc(g.substituteAddress):'');return s;});
-  }
-
-  // 5. Funeral
-  sn++;
-  if(d.funeralType){
-    h+=sec(sn,"Funeral Wishes");
-    h+='<p style="'+fs+'font-size:15px;color:#666;font-style:italic">These are expressions of wishes only and are not binding upon the Executors.</p>';
-    var fr=row("Preference",d.funeralType);
-    if(d.funeralType==="Cremation"&&d.ashesInstructions)fr+=row("Ashes",d.ashesInstructions);
-    if(d.funeralType==="Burial"){fr+=row("Burial Location",d.burialLocation);fr+=row("Denomination",d.denomination);}
-    fr+=row("Service Type",d.serviceType)+row("Service Location",d.serviceLocation)+row("Flowers",d.flowers)+row("Celebration of Life",d.celebrationOfLife);
-    if(d.funeralWishes)fr+=row("Other Wishes",d.funeralWishes);
-    h+=tbl(fr);
-  }
-
-  // 6. Specific Legacies
-  sn++;
-  if((d.legacies||[]).length>0){
-    h+=sec(sn,"Specific Legacies");
-    h+=items(d.legacies,function(l){
-      var s='<strong>'+esc(l.recipientName||"?")+'</strong>';
-      if(l.recipientType==="Charity"&&l.charityNumber)s+=' (Charity No. '+esc(l.charityNumber)+')';
-      if(l.legacyType==="Cash to Individual"||l.legacyType==="Cash to Charity")s+='<br>Gift: \u00a3'+Number(l.amount||0).toLocaleString()+(l.taxFree==="Yes"?' free of inheritance tax':'');
-      if(l.legacyType==="Specific Item")s+='<br>Item: '+esc(l.itemDescription||"\u2014");
-      s+=' \u2014 '+esc(l.condition||"Absolutely");
-      return s;
+    h+=sec('Guardians');var gcn=1;
+    d.guardians.forEach(function(g){
+      var cond=(g.condition==="If spouse predeceases me")?'If my '+(isMale?'wife':'husband')+' predeceases me, ':'';
+      h+=cl(gcn,cond+'I appoint <strong>'+esc(g.name||"[Name]")+'</strong> of '+esc(g.address||"[Address]")+' as the guardian of '+(g.guardianFor?'my child '+esc(g.guardianFor):'my minor children')+', who '+(g.guardianFor?'is':'are')+' under 18 at my death.');gcn++;
+      if(g.substituteName){h+=cl(gcn,'If '+esc(g.name)+' dies before me or cannot act as guardian for any reason, then I appoint <strong>'+esc(g.substituteName)+'</strong>'+(g.substituteAddress?' of '+esc(g.substituteAddress):'')+' as substitute guardian.');gcn++;}
     });
   }
 
-  // 7. Property Trust
-  sn++;
+  // ── 5. Funeral Wishes
+  if(d.funeralType){
+    h+=sec('Funeral Wishes');
+    var fw='I wish to be '+esc(d.funeralType).toLowerCase()+'.';
+    if(d.funeralType==="Burial"&&d.burialLocation)fw+=' I wish to be buried at '+esc(d.burialLocation)+(d.denomination?', '+esc(d.denomination):'')+'.';
+    if(d.funeralType==="Burial"&&d.serviceType)fw+=' with a '+esc(d.serviceType).toLowerCase()+'.';
+    if(d.funeralType==="Cremation"&&d.ashesInstructions)fw+=' '+esc(d.ashesInstructions)+'.';
+    if(d.serviceType&&d.serviceLocation&&d.funeralType!=="Burial")fw+=' Service at '+esc(d.serviceLocation)+'.';
+    if(d.flowers==="Yes")fw+=' I would like flowers at my funeral.';
+    if(d.flowers==="Donations in lieu")fw+=' I would prefer donations in lieu of flowers.';
+    if(d.celebrationOfLife==="Yes")fw+=' A celebration of life preferred.';
+    if(d.funeralWishes)fw+=' '+esc(d.funeralWishes);
+    fw+=' These are expressions of my wishes only and are not binding upon my Executors.';
+    h+=cl(1,fw);
+  }
+
+  // ── 6. Specific Legacies
+  if((d.legacies||[]).length>0){
+    h+=sec('Specific Legacies');
+    d.legacies.forEach(function(l,i){
+      var t='';
+      if(l.legacyType==="Cash to Individual"||l.legacyType==="Cash to Charity"){
+        t='I give the sum of <strong>&pound;'+Number(l.amount||0).toLocaleString()+'</strong> to '+esc(l.recipientName||"[Name]");
+        if(l.recipientType==="Charity"&&l.charityNumber)t+=' (Charity Number '+esc(l.charityNumber)+')';
+        if(l.taxFree==="Yes")t+=' free of inheritance tax';
+        t+=' absolutely.';
+      }else if(l.legacyType==="Specific Item"){
+        t='I give '+esc(l.itemDescription||"[Item]")+' to '+(l.recipientType==="Charity"?'':isMale?'my son ':'my daughter ')+esc(l.recipientName||"[Name]")+' absolutely.';
+      }else{t='I give '+esc(l.itemDescription||l.legacyType||"[Gift]")+' to '+esc(l.recipientName||"[Name]")+' absolutely.';}
+      h+=cl(i+1,t);
+    });
+  }
+
+  // ── 7. Right to Occupy
   if(d.propertyTrust==="Yes"){
-    h+=sec(sn,"Right to Occupy / Property Trust");
-    h+=tbl(row("Property",d.trustPropertyAddress)+row("Type",d.trustPropertyType)+row("Occupant (Life Tenant)",d.occupantName)+row("Relationship",d.occupantRelationship)+row("Life Interest Ends",d.lifeInterestEnd));
-    if((d.propertyTrustees||[]).length>0){h+=sub("Property Trustees");h+=items(d.propertyTrustees,function(t){return '<strong>'+esc(t.name||"?")+'</strong>'+(t.address?' \u2014 '+esc(t.address):'');});}
+    h+=sec('Right to Occupy');var rcn=1;
+    h+=cl(rcn,'I DECLARE that my property at '+esc(d.trustPropertyAddress||"[Address]")+(d.trustPropertyType==="Main residence (or any replacement)"?' or any property I hold as my main residence':'')+', (the &ldquo;Trust Property&rdquo;) shall be held upon the following trusts:');rcn++;
+    if((d.propertyTrustees||[]).length>0){
+      var ptL=d.propertyTrustees.map(function(t){return '<strong>'+esc(t.name||"[Name]")+'</strong> of '+esc(t.address||"[Address]")+(t.dob?', born on the '+esc(t.dob):'');}).join(', ');
+      h+=cl(rcn,'The Trustees of this trust shall be: '+ptL+'.');rcn++;
+    }
+    h+=cl(rcn,'My Trustees shall hold the Property upon trust for <strong>'+esc(d.occupantName||"[Name]")+'</strong> (the &ldquo;Occupant&rdquo;) during their lifetime to occupy and enjoy as their home.');rcn++;
+    h+=cl(rcn,'The life interest shall terminate upon the happening of any of the following events: '+esc(d.lifeInterestEnd||"the death of the life tenant").toLowerCase()+'.');
   }
 
-  // 8. Residuary Estate
-  sn++;
+  // ── 8. Definition of Estate
+  h+=sec('Definition of Estate');
+  h+=para('My estate shall mean all my legal and beneficial interests in property, money and possessions.');
+
+  // ── 9. Administrative Provisions
+  h+=sec('Administrative Provisions');
+  h+=para('My Executors may sell or convert any or all of the remaining assets as they consider appropriate and then shall hold my estate in trust on the following terms:');
+  var acn=1;
+  if(d.payDebts!=="No"){h+=cl(acn,'To pay my debts and any funeral costs, executor costs or administration expenses.');acn++;}
+  if(d.payTaxOnGifts!=="No"){h+=cl(acn,'To pay any tax or duty relating to assets passing under this Will or due as a result of my death on any gifts I made during my lifetime, unless this Will specifies otherwise.');}
+
+  // ── 10. Gift of Residue
   if(d.residuaryBeneficiary){
-    h+=sec(sn,"Residuary Estate");
-    h+='<p style="'+fs+'font-size:16px">The residuary estate shall pass to <strong>'+esc(d.residuaryBeneficiary)+'</strong>'+(d.residuaryBeneficiaryRel?' ('+esc(d.residuaryBeneficiaryRel)+')':'')+(d.survivorshipDays?' provided they survive by '+esc(d.survivorshipDays)+' days':'')+'.</p>';
-    if(d.ifPrimaryFailsToChildren==="Yes"){
-      h+=sub("If Primary Gift Fails");
-      h+='<p style="'+fs+'font-size:16px">To children who survive and attain the age of <strong>'+esc(d.childrenAge||"18")+'</strong> years in equal shares.';
-      if(d.perStirpes==="Yes")h+=' If any child predeceases, their issue shall take their share per stirpes upon attaining <strong>'+esc(d.issueAge||"18")+'</strong> years.';
-      h+='</p>';
-    }
-    if(d.ultimateBeneficiary){
-      h+=sub("Ultimate Default Beneficiary");
-      h+='<p style="'+fs+'font-size:16px">If all above gifts fail: <strong>'+esc(d.ultimateBeneficiary)+'</strong>';
-      if(d.ultimateBeneficiaryType==="Charity"&&d.ultimateCharityNumber)h+=' (Charity No. '+esc(d.ultimateCharityNumber)+') for its general charitable purposes';
-      h+='.</p>';
-    }
+    h+=sec('Gift of Residue');
+    h+=cl(1,'My Trustees shall hold my residuary estate on the trusts of the following clauses:');
+    h+=cl(2,'My trustees shall give my residuary estate to my '+(d.residuaryBeneficiaryRel||"beneficiary").toLowerCase()+' <strong>'+esc(d.residuaryBeneficiary)+'</strong> provided '+(isMale?'she':'he')+' survives me'+(d.survivorshipDays?' by '+esc(d.survivorshipDays)+' days':'')+' but if this gift fails the following provisions of my Will shall apply.');
   }
 
-  // 9. Business Interests
-  sn++;
+  // ── 11. Further Distribution
+  if(d.ifPrimaryFailsToChildren==="Yes"){
+    h+=sec('Further Distribution of Residuary Estate');
+    h+=cl(1,'If the primary gift fails entirely then the following provisions of my Will shall apply.');
+    h+=cl(2,'My trustees shall pay my residuary estate to my children who survive me and attain the age of '+esc(d.childrenAge||"18")+' years in equal shares'+(d.perStirpes==="Yes"?' but if any child dies before me their issue shall upon attaining '+esc(d.issueAge||"18")+' years take equally per stirpes the share which their parent would otherwise have inherited':''));
+  }
+
+  // ── 12. Ultimate Beneficiary
+  if(d.ultimateBeneficiary){
+    h+=sec('Further Distribution of Residuary Estate');
+    h+=cl(1,'If the above gifts fail entirely then the following provisions of my Will shall apply.');
+    var ut='My trustees shall pay my residuary estate to <strong>'+esc(d.ultimateBeneficiary)+'</strong>';
+    if(d.ultimateBeneficiaryType==="Charity"&&d.ultimateCharityNumber)ut+=' (Registered Charity Number '+esc(d.ultimateCharityNumber)+') absolutely for its general charitable purposes';
+    else ut+=' absolutely';
+    h+=cl(2,ut);
+  }
+
+  // ── Business Interests
   if(d.hasBusinessInterests==="Yes"){
-    h+=sec(sn,"Business Interests");
-    h+=tbl(row("Business Type",d.businessType));
-    var powers=[];
-    if(d.bizCanContinue==="Yes")powers.push("Continue operations");
-    if(d.bizCanSell==="Yes")powers.push("Sell the business");
-    if(d.bizCanWindUp==="Yes")powers.push("Wind up operations");
-    if(d.bizCanAppointManagers==="Yes")powers.push("Appoint managers or agents");
-    if(d.bizCanNegotiate==="Yes")powers.push("Negotiate sale agreements");
-    if(d.bizCanPreemption==="Yes")powers.push("Exercise pre-emption rights");
-    if(d.bizCanClaimBPR==="Yes")powers.push("Claim Business Property Relief");
-    if(d.bizCanDelegate==="Yes")powers.push("Delegate powers");
-    if(d.bizCanAdvise==="Yes")powers.push("Take professional advice");
-    if(powers.length>0){h+=sub("Executor Powers");h+='<ul style="'+fs+'font-size:15px;margin:8px 0 8px 24px">';powers.forEach(function(pw){h+='<li style="margin-bottom:4px">'+pw+'</li>';});h+='</ul>';}
-    if(d.bizIncomeToResidue==="Yes")h+='<p style="'+fs+'font-size:15px">Income, profits and proceeds form part of the residuary estate.</p>';
+    h+=sec('Business Interests');
+    h+=cl(1,'I authorize my executors to continue, sell, wind up, or otherwise deal with any business interests that I may own at the date of my death, whether carried on as a sole trader, in partnership, or through share ownership in any company, as they consider appropriate in the circumstances.');
+    h+=cl(2,'My executors may enter into any arrangements for the management or disposal of such business interests, including but not limited to:');
+    var bp=[];
+    if(d.bizCanAppointManagers==="Yes")bp.push(bul('Appointing managers or agents to continue business operations'));
+    if(d.bizCanNegotiate==="Yes")bp.push(bul('Negotiating sale agreements or business disposals'));
+    if(d.bizCanWindUp==="Yes")bp.push(bul('Winding up business operations and disposing of assets'));
+    if(d.bizCanPreemption==="Yes")bp.push(bul('Exercising any pre-emption rights or partnership buyout provisions'));
+    if(d.bizCanClaimBPR==="Yes")bp.push(bul('Making any elections or claims for business property relief or other tax advantages'));
+    if(bp.length>0)h+=blist(bp);
+    h+=cl(3,'My executors shall have full power to deal with any business interests in such manner as they think fit, and I expressly authorize them to take professional advice and to delegate such powers as may be appropriate for the proper administration of my estate.');
+    if(d.bizIncomeToResidue==="Yes")h+=cl(4,'Any income, profits, or proceeds arising from such business interests shall form part of my residuary estate and be distributed in accordance with the provisions of this Will.');
   }
 
-  // 10. Estate summary
-  var tA=(S.ed.epAssets||[]).reduce(function(s,a){return s+(parseFloat(a.value)||0);},0);
-  var tL=(S.ed.liabilities||[]).reduce(function(s,l){return s+(parseFloat(l.value)||0);},0);
-  if(tA>0||tL>0){
-    sn++;
-    h+=sec(sn,"Estate Summary");
-    h+=tbl(row("Total Assets","\u00a3"+tA.toLocaleString())+row("Total Liabilities","\u00a3"+tL.toLocaleString())+row("Net Estate","\u00a3"+(tA-tL).toLocaleString()));
+  // ── Severability
+  if(d.includeSeverability==="Yes"){
+    h+=sec('Severability');
+    h+=cl(1,'If any provision of this Will is held to be invalid or unenforceable for any reason, such invalidity or unenforceability shall not affect the validity or enforceability of any other provision of this Will, and this Will shall be construed and enforced as if such invalid or unenforceable provision had never been contained herein.');
   }
 
-  // 11. LPAs
-  if(S.pd.hwCreate||S.pd.pfCreate){
-    sn++;
-    h+=sec(sn,"Powers of Attorney");
-    h+=tbl(row("Health & Welfare LPA",S.pd.hwCreate||"\u2014")+row("Life-Sustaining Treatment",S.pd.hwLifeSustaining)+row("Property & Financial LPA",S.pd.pfCreate||"\u2014")+row("When Active",S.pd.pfWhen)+row("Attorney Decision Mode",S.pd.attorneyDecision));
-    if((S.pd.attorneys||[]).length>0){h+=sub("Attorneys");h+=items(S.pd.attorneys,function(a){return '<strong>'+esc(a.name||"?")+'</strong>'+(a.relationship?' \u2014 '+esc(a.relationship):'');});}
-  }
+  // ── Final Clause
+  h+=sec('Final Clause');
+  h+=cl(1,'For the avoidance of doubt this is the last clause of this my Will and is followed by the Testimonium and Attestation on the next page.');
 
-  // 12. Trust
-  if(S.td.trustType){
-    sn++;
-    h+=sec(sn,"Trust");
-    h+=tbl(row("Type",S.td.trustType)+row("Name",S.td.trustName)+row("Purpose",S.td.trustPurpose));
-  }
+  // ── Execution Page
+  h+='<div style="margin-top:48px;padding-top:24px;border-top:2px solid '+pc+'">';
+  h+='<h2 style="'+fs+'font-size:22px;font-weight:700;text-align:center;margin-bottom:24px">EXECUTION OF WILL</h2>';
+  h+=para('Signed by <strong>'+esc(fullName)+'</strong>, to give effect to this Will, on the date written below in the presence of us both present at the same time, who at '+(isMale?'his':'her')+' request and in '+(isMale?'his':'her')+' presence and in the presence of each other have subscribed our names as witnesses.');
+  h+='<div style="margin-top:32px;'+fs+'"><div style="margin-bottom:16px"><span style="font-weight:600;display:inline-block;width:200px">DATE:</span><span style="border-bottom:1px solid #333;display:inline-block;width:300px">'+(d.executionDate||'')+'</span></div>';
+  h+='<div style="margin-bottom:16px"><span style="font-weight:600;display:inline-block;width:200px">SIGNATURE OF TESTATOR:</span></div>';
+  h+='<div style="border-bottom:1px solid #333;width:300px;height:40px;margin-bottom:8px"></div>';
+  h+='<div style="font-size:16px;font-weight:600">'+esc(fullName)+'</div></div>';
 
-  // Admin & Severability
-  sn++;
-  h+=sec(sn,"Administrative Provisions");
-  h+=tbl(row("Pay Debts",yn(d.payDebts))+row("Pay Funeral Costs",yn(d.payFuneralCosts))+row("Pay Executor Costs",yn(d.payExecutorCosts))+row("Pay Tax on Lifetime Gifts",yn(d.payTaxOnGifts)));
-  if(d.includeSeverability==="Yes")h+='<p style="'+fs+'font-size:15px;margin-top:12px">If any provision of this Will is held invalid, it shall not affect the validity of any other provision.</p>';
+  h+='<div style="margin-top:36px;'+fs+'"><div style="font-size:16px;font-weight:700;margin-bottom:20px">WITNESSED BY:</div>';
+  var wits=[[d.witness1Name,d.witness1Address,d.witness1Phone,d.witness1Occupation],[d.witness2Name,d.witness2Address,d.witness2Phone,d.witness2Occupation]];
+  wits.forEach(function(w,i){
+    h+='<div style="margin-bottom:28px;'+(i===0?'padding-bottom:20px;border-bottom:1px solid #eee;':'')+'">';
+    h+='<div style="font-weight:700;margin-bottom:12px">WITNESS '+(i+1)+'</div>';
+    h+='<div style="margin-bottom:8px"><span style="color:#666;display:inline-block;width:140px">SIGNATURE:</span><span style="border-bottom:1px solid #333;display:inline-block;width:300px;height:20px"></span></div>';
+    h+='<div style="margin-bottom:6px"><span style="color:#666;display:inline-block;width:140px">FULL NAME:</span>'+esc(w[0]||"")+'</div>';
+    h+='<div style="margin-bottom:6px"><span style="color:#666;display:inline-block;width:140px">ADDRESS:</span>'+esc(w[1]||"")+'</div>';
+    h+='<div style="margin-bottom:6px"><span style="color:#666;display:inline-block;width:140px">PHONE:</span>'+esc(w[2]||"")+'</div>';
+    h+='<div><span style="color:#666;display:inline-block;width:140px">OCCUPATION:</span>'+esc(w[3]||"")+'</div></div>';
+  });
+  h+='</div></div>';
 
-  // Execution
-  if(d.executionDate||d.witness1Name){
-    sn++;
-    h+=sec(sn,"Execution");
-    if(d.executionDate)h+='<p style="'+fs+'font-size:16px">Date of execution: <strong>'+esc(d.executionDate)+'</strong></p>';
-    if(d.witness1Name){h+=sub("Witness 1");h+=tbl(row("Name",d.witness1Name)+row("Address",d.witness1Address)+row("Occupation",d.witness1Occupation)+row("Phone",d.witness1Phone));}
-    if(d.witness2Name){h+=sub("Witness 2");h+=tbl(row("Name",d.witness2Name)+row("Address",d.witness2Address)+row("Occupation",d.witness2Occupation)+row("Phone",d.witness2Phone));}
-  }
-
-  // Footer
+  // ── Footer
   h+='<div style="margin-top:40px;padding-top:20px;border-top:2px solid '+pc+';text-align:center;'+fs+'">';
   h+='<div style="font-size:13px;color:#888">Prepared by '+esc(b.companyName);
-  if(b.sraNumber)h+=' \u00b7 SRA: '+esc(b.sraNumber);
-  if(b.fca)h+=' \u00b7 FCA: '+esc(b.fca);
-  h+='</div>';
-  h+='<div style="font-size:12px;color:#aaa;margin-top:4px">This document is for review only and does not constitute legal or financial advice.</div>';
-  h+='</div></div>';
+  if(b.sraNumber)h+=' &middot; SRA: '+esc(b.sraNumber);
+  if(b.fca)h+=' &middot; FCA: '+esc(b.fca);
+  h+='</div><div style="font-size:12px;color:#aaa;margin-top:4px">This document is a draft for review only and does not constitute legal or financial advice.</div></div></div>';
   return h;
 }
 function draftText(){
   var b=S.brand,d=S.wd,p=d.personal||{};
-  var t=b.companyName+"\nESTATE PLAN - DRAFT\n\n";
-  t+="1. PERSONAL DETAILS\n"+((p.title||"")+" "+(p.fullName||"-")).trim()+"\nDOB: "+(p.dob||"-")+"\nStatus: "+(p.maritalStatus||"-")+"\nAddress: "+((p.address||"-").replace(/\n/g,", "))+"\n";
-  if(d.isMirrorWill==="Yes")t+="\n2. MIRROR WILL\nPartner: "+(d.mirrorPartnerName||"-")+"\n";
-  if((d.executors||[]).length>0){t+="\nEXECUTORS\n";d.executors.forEach(function(x){t+="  - "+(x.name||"?")+(x.relationship?" ("+x.relationship+")":"")+"\n";});}
-  if((d.substituteExecutors||[]).length>0){t+="SUBSTITUTE EXECUTORS\n";d.substituteExecutors.forEach(function(x){t+="  - "+(x.name||"?")+"\n";});}
-  if((d.guardians||[]).length>0){t+="\nGUARDIANS\n";d.guardians.forEach(function(g){t+="  - "+(g.name||"?")+(g.guardianFor?" for "+g.guardianFor:"")+"\n";});}
-  if(d.funeralType)t+="\nFUNERAL WISHES\n"+d.funeralType+(d.ashesInstructions?"\nAshes: "+d.ashesInstructions:"")+(d.burialLocation?"\nBurial: "+d.burialLocation:"")+(d.serviceType?"\nService: "+d.serviceType:"")+"\n";
-  if((d.legacies||[]).length>0){t+="\nSPECIFIC LEGACIES\n";d.legacies.forEach(function(l){t+="  - "+(l.recipientName||"?")+(l.amount?" £"+l.amount:"")+(l.itemDescription?" "+l.itemDescription:"")+(l.charityNumber?" ("+l.charityNumber+")":"")+"\n";});}
-  if(d.propertyTrust==="Yes")t+="\nPROPERTY TRUST\n"+(d.trustPropertyAddress||"-")+"\nOccupant: "+(d.occupantName||"-")+"\n";
-  if(d.residuaryBeneficiary)t+="\nRESIDUARY ESTATE\nPrimary: "+d.residuaryBeneficiary+(d.survivorshipDays?" (survives "+d.survivorshipDays+" days)":"")+"\n"+(d.ifPrimaryFailsToChildren==="Yes"?"If fails: to children at age "+(d.childrenAge||"18")+(d.perStirpes==="Yes"?", per stirpes at "+(d.issueAge||"18"):"")+"\n":"")+(d.ultimateBeneficiary?"Ultimate: "+d.ultimateBeneficiary+"\n":"");
-  if(d.hasBusinessInterests==="Yes")t+="\nBUSINESS INTERESTS\nType: "+(d.businessType||"-")+"\n";
-  var tA=(S.ed.epAssets||[]).reduce(function(s,a){return s+(parseFloat(a.value)||0);},0);
-  if(tA>0)t+="\nESTATE: Assets £"+tA.toLocaleString()+"\n";
-  t+="\nLPAs: H&W "+(S.pd.hwCreate||"-")+", P&F "+(S.pd.pfCreate||"-")+"\n";
-  if(S.td.trustType)t+="\nTRUST: "+S.td.trustType+"\n";
-  t+="\n---\nPrepared by "+b.companyName+". For review only.\n";
+  var fn=((p.title||"")+" "+(p.fullName||"[Name]")).trim();
+  var addr=(p.address||"[Address]").replace(/\n/g,", ");
+  var cn=0;function sn(){cn++;return cn;}
+  var t="LAST WILL AND TESTAMENT\nof "+fn+"\n\nThis Will is made by me "+fn+" of "+addr+(p.dob?", born on "+p.dob:"")+"\n\n";
+  t+=sn()+". REVOKING PREVIOUS WILLS\nI hereby revoke all former Wills and declare this to be my last Will.\n\n";
+  if(d.isMirrorWill==="Yes"&&d.mirrorPartnerName)t+=sn()+". FREEDOM TO REVOKE\nMirror will with "+d.mirrorPartnerName+". Either may change or revoke at any time.\n\n";
+  if((d.executors||[]).length>0){t+=sn()+". EXECUTORS AND TRUSTEES\n";d.executors.forEach(function(x){t+="Executor: "+(x.name||"?")+" of "+(x.address||"?")+"\n";});if((d.substituteExecutors||[]).length>0)d.substituteExecutors.forEach(function(x){t+="Substitute: "+(x.name||"?")+"\n";});t+="\n";}
+  if((d.guardians||[]).length>0){t+=sn()+". GUARDIANS\n";d.guardians.forEach(function(g){t+=(g.name||"?")+(g.guardianFor?" for "+g.guardianFor:"")+"\n";if(g.substituteName)t+="Substitute: "+g.substituteName+"\n";});t+="\n";}
+  if(d.funeralType){t+=sn()+". FUNERAL WISHES\n"+d.funeralType+(d.ashesInstructions?". "+d.ashesInstructions:"")+(d.burialLocation?". Burial at "+d.burialLocation:"")+(d.serviceType?". "+d.serviceType:"")+"\n\n";}
+  if((d.legacies||[]).length>0){t+=sn()+". SPECIFIC LEGACIES\n";d.legacies.forEach(function(l,i){t+=(i+1)+". ";if(l.amount)t+="\u00a3"+Number(l.amount).toLocaleString()+" to ";if(l.itemDescription)t+=l.itemDescription+" to ";t+=(l.recipientName||"?");if(l.charityNumber)t+=" ("+l.charityNumber+")";t+=" absolutely.\n";});t+="\n";}
+  if(d.propertyTrust==="Yes"){t+=sn()+". RIGHT TO OCCUPY\nProperty: "+(d.trustPropertyAddress||"?")+"\nOccupant: "+(d.occupantName||"?")+"\nEnds: "+(d.lifeInterestEnd||"death")+"\n\n";}
+  t+=sn()+". DEFINITION OF ESTATE\nAll legal and beneficial interests in property, money and possessions.\n\n";
+  t+=sn()+". ADMINISTRATIVE PROVISIONS\nPay debts, funeral costs, executor costs, tax.\n\n";
+  if(d.residuaryBeneficiary){t+=sn()+". GIFT OF RESIDUE\nTo "+d.residuaryBeneficiary+(d.survivorshipDays?" (survives "+d.survivorshipDays+" days)":"")+"\n";if(d.ifPrimaryFailsToChildren==="Yes")t+="If fails: to children at age "+(d.childrenAge||"18")+(d.perStirpes==="Yes"?", per stirpes at "+(d.issueAge||"18"):"")+"\n";if(d.ultimateBeneficiary)t+="Ultimate: "+d.ultimateBeneficiary+(d.ultimateCharityNumber?" ("+d.ultimateCharityNumber+")":"")+"\n";t+="\n";}
+  if(d.hasBusinessInterests==="Yes")t+=sn()+". BUSINESS INTERESTS\nExecutors authorised to continue, sell, wind up as appropriate.\n\n";
+  if(d.includeSeverability==="Yes")t+=sn()+". SEVERABILITY\nInvalid provisions do not affect other provisions.\n\n";
+  t+=sn()+". FINAL CLAUSE\nThis is the last clause, followed by Execution.\n\n";
+  t+="EXECUTION OF WILL\nSigned by "+fn+"\nDate: "+(d.executionDate||"________")+"\nWitness 1: "+(d.witness1Name||"________")+"\nWitness 2: "+(d.witness2Name||"________")+"\n\n";
+  t+="---\nPrepared by "+b.companyName+". Draft for review only.\n";
   return t;
 }
 
